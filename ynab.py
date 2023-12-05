@@ -65,28 +65,32 @@ def processFile(myData):
             # get date if string is in relative form - yesterday or day of week
             return getRelativeDate(processedStr)
 
-    # according to input file, the 3rd line of every transacton contains the date info
+    # according to input file, the 4th line of every transacton contains the date info
     for index, item in enumerate(newData):
-        if (index - 3) % 4 == 0:
+        if (index - 3) % 4 == 0:  # if you are on the line containing the date or relative date
             newData[index] = processDate(item)
 
     if len(newData) % 4 != 0:  # after removing the line with the cash back %, each transaction should contain 4 lines of data
         print("Error in input file, please check")
         return False
 
+    # copy the list so we can move things around to the correct order
     finalData = newData[:]
 
     # setting up the final data list in this order: Date, Payee, Memo, Amount
     for i in range(0, len(newData), 4):
         for j, value in enumerate(newData[i:i+4]):
             if "$" in value:
+                # the data containing the amount goes in the 4th spot
                 finalData[i+3] = value
             elif "/" in value:
+                # the data containing the date goes in the 1st spot
                 finalData[i] = value
             elif j < 2:
+                # there are 2 lines of plain text, payee and memo, the payee is first and goes in the 2nd spot
                 finalData[i+1] = value
             else:
-                finalData[i+2] = value
+                finalData[i+2] = value  # the memo line, goes in the 3rd spot
 
     return finalData
 
