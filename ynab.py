@@ -13,7 +13,8 @@ def readFile(inputFile):
 
 
 def processFile(myData):
-    newData = []
+
+    # defining all functions that are needed within this function
 
     def processItem(item):
         # stripping out commas, output is csv file and extra commas cause errors
@@ -23,9 +24,6 @@ def processFile(myData):
         else:
             item = item.replace("$", "-$")  # marking all outflows
         return item
-
-    # removing the line in the file with the % cashback, not needed
-    newData = [processItem(item) for item in myData if "%" not in item]
 
     def getRelativeDate(relativeTerm):
         '''Apple card transactions will often state dates like Yesterday, and days of the week relative to the current date.  
@@ -65,6 +63,9 @@ def processFile(myData):
             # get date if string is in relative form - yesterday or day of week
             return getRelativeDate(processedStr)
 
+    newData = []
+    # removing the line in the file with the % cashback, not needed
+    newData = [processItem(item) for item in myData if "%" not in item]
     # according to input file, the 4th line of every transacton contains the date info
     for index, item in enumerate(newData):
         if (index - 3) % 4 == 0:  # if you are on the line containing the date or relative date
